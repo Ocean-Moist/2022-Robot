@@ -4,20 +4,33 @@
 
 package frc.robot;
 
+import edu.wpi.first.math.controller.SimpleMotorFeedforward;
+import edu.wpi.first.math.kinematics.DifferentialDriveKinematics;
+import edu.wpi.first.math.trajectory.constraint.DifferentialDriveVoltageConstraint;
 import edu.wpi.first.math.util.Units;
 
 public final class Constants {
     
     public static final class AutoConstants {
-
+        public static final double trackWidth = Units.inchesToMeters(28.125);
+        public static final DifferentialDriveKinematics kDriveKinematics =
+                new DifferentialDriveKinematics(trackWidth);
+        public static final double ksVolts = .14795;
+        public static final double kvVoltSecondsPerMeter = 2.6256;
+        public static final double kaVoltSecondsSquaredPerMeter = 5.6253;
+        public static final double kPDriveVel = 4.0611;
+        public static final DifferentialDriveVoltageConstraint autoVoltageConstraint = new DifferentialDriveVoltageConstraint(new SimpleMotorFeedforward(Constants.AutoConstants.ksVolts, Constants.AutoConstants.kvVoltSecondsPerMeter, Constants.AutoConstants.kaVoltSecondsSquaredPerMeter), kDriveKinematics, 11.0);
+        // ramesete params
+        public static final double kRamseteB = 2;
+        public static final double kRamseteZeta = 0.7;
     }
 
     public static final class DriveConstants {
         /** DRIVE MOTOR PORTS **/
-        public static final int leftFrontDrivePort = 4;
-        public static final int leftRearDrivePort = 3;
-        public static final int rightFrontDrivePort = 2;
-        public static final int rightRearDrivePort = 1;
+        public static final int leftFrontDrivePort = 2;
+        public static final int leftRearDrivePort = 1;
+        public static final int rightFrontDrivePort = 3;
+        public static final int rightRearDrivePort = 4;
 
         public static final int rightEncoderChannelA = 0;
         public static final int rightEncoderchannelB = 1;
@@ -31,6 +44,8 @@ public final class Constants {
 
         public static final double minDriveSpeed = 0.1;
         public static final double maxDriveSpeed = 0.95;
+        public static final double maxDriveSpeedMetersPerSecond = 3.0;
+        public static final double maxDriveAccelerationMetersPerSecondSquared = 3.0;
         public static final double maxAutoSpeed = 0.55;
         public static final double maxAutoTurn = 0.3;
     }

@@ -59,6 +59,7 @@ public class DrivetrainSubsystem extends SubsystemBase {
         //Configure solenoids
         driveShifterRight.set(DoubleSolenoid.Value.kReverse);
         driveShifterLeft.set(DoubleSolenoid.Value.kReverse);
+        odometry = new DifferentialDriveOdometry(gyro.getRotation2d());
     }
 
     /**
@@ -67,7 +68,7 @@ public class DrivetrainSubsystem extends SubsystemBase {
      * @param rot Velocity of rotation
      */
     public void arcadeDrive(double throttle, double rot) {
-        drive.arcadeDrive(throttle * maxDriveSpeed, maxDriveSpeed < 0 ? -rot * maxDriveSpeed : rot * maxDriveSpeed);
+        drive.arcadeDrive(throttle * maxDriveSpeed, rot * maxDriveSpeed);
     }
 
     /**
@@ -95,8 +96,10 @@ public class DrivetrainSubsystem extends SubsystemBase {
     }
 
     public void tankDriveVolts(double leftVolts, double rightVolts) {
+        System.out.println(leftVolts + " " + rightVolts);
+        System.out.println(this.getGyroAngle());
         leftMotors.setVoltage(leftVolts);
-        leftMotors.setVoltage(rightVolts);
+        rightMotors.setVoltage(rightVolts);
         drive.feed();
     }
 
