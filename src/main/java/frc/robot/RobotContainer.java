@@ -14,7 +14,10 @@ import frc.robot.commands.auto.BetterAutoForwardDistance;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.commands.drive.ArcadeDrive;
 import frc.robot.commands.drive.TankDrive;
+<<<<<<< HEAD
 import frc.robot.commands.intake.ToggleIntake;
+=======
+>>>>>>> upstream/main
 import frc.robot.lib.controllers.FightStick;
 import frc.robot.subsystems.*;
 
@@ -46,14 +49,6 @@ public class RobotContainer {
   }
 
   private void configureButtonBindings() {
-    //xboxY.whenPressed(new ToggleShifter(drivetrain));
-
-    FightStick.fightStickA.whenPressed(new ToggleIntake(intake, indexer));
-    //FightStick.fightStickB.whenPressed(new InvertIntake(intake));
-
-    xboxA.whenPressed(new AutoTurnAngle(drivetrain, 90));
-
-    xboxLB.whenPressed(new BetterAutoForwardDistance(drivetrain));
 
   }
 

@@ -1,25 +1,46 @@
 package frc.robot.subsystems;
 
-
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
+import com.revrobotics.CANSparkMax;
+import com.revrobotics.CANSparkMaxLowLevel;
 import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.wpilibj.DutyCycleEncoder;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 import static frc.robot.Constants.MechanismConstants.*;
+
 
 public class OuttakeSubsystem extends SubsystemBase {
     // Setup motors, pid controller, and booleans
     private final TalonFX shooterMotorFront = new TalonFX(shooterMotorPortA);
     private final TalonFX shooterMotorBack = new TalonFX(shooterMotorPortB);
-    PIDController pid;
+    private final CANSparkMax hoodAngleMotor = new CANSparkMax(hoodAngleMotorPort, CANSparkMaxLowLevel.MotorType.kBrushless);
+
+    private final DutyCycleEncoder hoodAngleEncoder = new DutyCycleEncoder(hoodAngleEncoderPort);
+
+    PIDController hoodAnglePID;
+    PIDController frontShooterPID;
+    PIDController backShooterPID;
+
     public boolean shooterRunning = false;
-    public boolean hoodUp = false;
+    private double currentFrontShooterPower = 0.0;
+    private double currentBackShooterPower = 0.0;
+    private double currentHoodAngle = defaultHoodAngle;
+
 
     public OuttakeSubsystem() {
+        hoodAngleEncoder.reset();
+        hoodAngleEncoder.setDistancePerRotation(2*Math.PI);
+
         shooterMotorFront.setInverted(true);
         shooterMotorBack.setInverted(false);
-        pid = new PIDController(0, 0 ,0);
+
+        hoodAnglePID = new PIDController(0, 0 ,0);
+        frontShooterPID = new PIDController(0, 0 ,0);
+        backShooterPID = new PIDController(0, 0 ,0);
+
+        hoodAnglePID.setSetpoint(defaultHoodAngle);
     }
 
     private void setShooterPower(double power) { // Enables both wheels
@@ -29,8 +50,7 @@ public class OuttakeSubsystem extends SubsystemBase {
     }
     
     public void setShooterFront(double power) { // Enables front wheels
-        shooterMotorFront.set(ControlMode.PercentOutput, power);
-        shooterRunning = true;
+        if (power>1.0 || power<0.0) return; currentFrontShooterPower = power;
     }
 
     public void setShooterBack(double power) { // Enables back wheels
@@ -43,23 +63,9 @@ public class OuttakeSubsystem extends SubsystemBase {
         shooterRunning = false;
     }
 
-    public void toggleShooter() {
-        if (this.shooterRunning) stopShooter(); else setShooterPower(maxOuttakeSpeed);
-    }
+    public void setHoodAngle(double angle) { if (angle>45.0 || angle<10.0) return; this.currentHoodAngle = angle; hoodAnglePID.setSetpoint(angle); }
 
-    public void setHoodAngle(double angle) { pid.setSetpoint(angle); hoodUp = true; }
-
-    /*
-    public void stopHood() { hoodAngleMotor.set(ControlMode.PercentOutput, 0); hoodUp = false; }
-
-    //positive = spin right
-    public void spinTurret(double power) { this.turretMotor.set(ControlMode.PercentOutput, power); }
-
-    public void stopTurret() { turretMotor.set(TalonFXControlMode.PercentOutput, 0); }
-
-    //Degrees off the vertical
-    public double getHoodAngle() { return hoodEncoder.getDistance(); }
-     */
+    public double getHoodAngle() { return hoodAngleEncoder.getDistance(); } //RADIANS
 
     public void disable() {
         stopShooter();
@@ -69,12 +75,10 @@ public class OuttakeSubsystem extends SubsystemBase {
 
     @Override
     public void periodic() {
-        /*
-        if (hoodUp) {
-            double power = pid.calculate(getHoodAngle());
-            hoodAngleMotor.set(TalonFXControlMode.PercentOutput, power);
+        if (shooterRunning) {
+            double power = hoodAnglePID.calculate(getHoodAngle());
+            hoodAngleMotor.set(power);
         }
-         **/
     }
 }
 
