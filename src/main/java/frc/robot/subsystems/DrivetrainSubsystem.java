@@ -47,7 +47,7 @@ public class DrivetrainSubsystem extends SubsystemBase {
         configureDriveMotors(driveMotors); // Initialize motors
         leftMotors = new MotorControllerGroup(driveMotors[0], driveMotors[1]);
         rightMotors = new MotorControllerGroup(driveMotors[2], driveMotors[3]);
-        rightMotors.setInverted(true);
+        leftMotors.setInverted(true);
         drive = new DifferentialDrive(leftMotors, rightMotors); // Initialize Differential Drive
 
         // Configure encoders
@@ -83,7 +83,7 @@ public class DrivetrainSubsystem extends SubsystemBase {
         double leftPower = ((maxDriveSpeed - minDriveSpeed) * Math.abs(leftVelocity) + minDriveSpeed) * leftSign;
         double rightPower = ((maxDriveSpeed - minDriveSpeed) * Math.abs(rightVelocity) + minDriveSpeed) * rightSign;
 
-        drive.tankDrive(leftVelocity, rightVelocity);
+        drive.tankDrive(-leftVelocity, rightVelocity);
     }
 
     /**
@@ -151,6 +151,8 @@ public class DrivetrainSubsystem extends SubsystemBase {
         this.leftEncoder.reset();
         this.rightEncoder.reset();
     }
+
+    public double getMeters() { return rightEncoder.get()/256.0 * .4188; }
 
     public double getRightDistanceDriven() { return rightEncoder.getDistance(); } // Returns the distance the right side has driven
 
@@ -220,6 +222,7 @@ public class DrivetrainSubsystem extends SubsystemBase {
         SmartDashboard.putNumber("Right Drive Encoder: ", getRightEncoderCount());
         SmartDashboard.putNumber("Left Drive Distance: ", getLeftDistanceDriven());
         SmartDashboard.putNumber("Right Drive Distance: ", getRightDistanceDriven());
+        SmartDashboard.putNumber("meter", getMeters());
     }
 }
 
