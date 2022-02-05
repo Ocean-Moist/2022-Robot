@@ -35,9 +35,9 @@ public class RobotContainer {
   public static XboxController xboxController = new XboxController(Constants.OIConstants.xboxControllerPort);
 
   public static DrivetrainSubsystem drivetrain = new DrivetrainSubsystem();
-  public static IntakeSubsystem intake = new IntakeSubsystem();
-  public static IndexerSubsystem indexer = new IndexerSubsystem();
-  public static LimelightSubsystem limelight = new LimelightSubsystem("limelight-two");
+  //public static IntakeSubsystem intake = new IntakeSubsystem();
+  //public static IndexerSubsystem indexer = new IndexerSubsystem();
+  //public static LimelightSubsystem limelight = new LimelightSubsystem("limelight-two");
   //public static OuttakeSubsystem outtake = new OuttakeSubsystem();
 
   public RobotContainer() {
@@ -78,9 +78,9 @@ public class RobotContainer {
 
   private void disableAll() {
     drivetrain.disable();
-    indexer.disable();
-    intake.disable();
-    limelight.disable();
+    //indexer.disable();
+    //intake.disable();
+    //limelight.disable();
     //outtake.disable();
   }
 

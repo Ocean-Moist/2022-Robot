@@ -15,10 +15,10 @@ public final class Constants {
         public static final double trackWidth = Units.inchesToMeters(28.125);
         public static final DifferentialDriveKinematics kDriveKinematics =
                 new DifferentialDriveKinematics(trackWidth);
-        public static final double ksVolts = 0.51282;
-        public static final double kvVoltSecondsPerMeter = 3.2836;
-        public static final double kaVoltSecondsSquaredPerMeter = 0.080358;
-        public static final double kPDriveVel = 1.8914;
+        public static final double ksVolts = 0.49117;
+        public static final double kvVoltSecondsPerMeter = 3.4251;
+        public static final double kaVoltSecondsSquaredPerMeter = 0.091565;
+        public static final double kPDriveVel = 1.9736;
         public static final DifferentialDriveVoltageConstraint autoVoltageConstraint = new DifferentialDriveVoltageConstraint(new SimpleMotorFeedforward(Constants.AutoConstants.ksVolts, Constants.AutoConstants.kvVoltSecondsPerMeter, Constants.AutoConstants.kaVoltSecondsSquaredPerMeter), kDriveKinematics, 11.0);
         // ramesete paramss
         public static final double kRamseteB = 2;
@@ -42,7 +42,7 @@ public final class Constants {
         /** MISC CONSTANTS **/
         public static final double trackWidth = Units.inchesToMeters(27);
         public static final int driveGearRatio = 0;
-        public static final int wheelDiameter = 0; // 6 in.
+        public static final int wheelDiameter =     0; // 6 in.
 
         public static final double minDriveSpeed = 0.1;
         public static final double maxDriveSpeed = 0.95;
