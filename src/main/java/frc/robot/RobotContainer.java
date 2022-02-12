@@ -4,16 +4,28 @@
 
 package frc.robot;
 
+import edu.wpi.first.networktables.NetworkTable;
+import edu.wpi.first.networktables.NetworkTableEntry;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj2.command.FunctionalCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.commands.auto.AutoRoutine6;
 import frc.robot.commands.drive.ArcadeDrive;
 import frc.robot.commands.drive.TankDrive;
+import frc.robot.commands.indexer.ToggleBelt;
 import frc.robot.commands.intake.ToggleIntake;
+import frc.robot.commands.outtake.DisableShooter;
+import frc.robot.commands.outtake.EnableShooter;
 import frc.robot.lib.controllers.FightStick;
 import frc.robot.subsystems.*;
+
+import java.util.List;
+import java.util.Map;
 
 public class RobotContainer {
   // CONTROLLERS
@@ -32,9 +44,9 @@ public class RobotContainer {
   public static XboxController xboxController = new XboxController(Constants.OIConstants.xboxControllerPort);
   // SUBSYSTEMS
   public static DrivetrainSubsystem drivetrain = new DrivetrainSubsystem();
-  public static IntakeSubsystem intake = new IntakeSubsystem();
   public static IndexerSubsystem indexer = new IndexerSubsystem();
-  public static LimelightSubsystem limelight = new LimelightSubsystem("limelight-two");
+  public static IntakeSubsystem intake = new IntakeSubsystem(indexer);
+  public static LimelightSubsystem limelight = new LimelightSubsystem("limelight-arc");
   public static OuttakeSubsystem outtake = new OuttakeSubsystem();
 
   // Sets up controllers, configures controllers, and sets the default drive mode (tank or arcade)
@@ -49,9 +61,12 @@ public class RobotContainer {
   private void configureButtonBindings() {
     /*  SUBSYSTEM COMMANDS (Main, functional commands) */
     FightStick.fightStickA.whenPressed(new ToggleIntake(intake, indexer)); // Toggle intake wheels and pneumatics
+    FightStick.fightStickX.whenPressed(new ToggleBelt(indexer)); // Toggle indexer (tower portion)
+    FightStick.fightStickB.whenPressed(new EnableShooter(outtake)); // Enable shooter wheels
+    FightStick.fightStickY.whenPressed(new DisableShooter(outtake)); // Disable shooter wheels
 
     /* MISC COMMANDS (Random lib of commands. Written using functional commands because most are just one line ) */
-    // have fun with this - jason and jacob '22
+    // have fun with this - jason and jacob '22   ඞ ඞ ඞ ඞ ඞ ඞ ඞ ඞ ඞ ඞ ඞ ඞ ඞ ඞ ඞ ඞ
     xboxSquares.whenPressed(new FunctionalCommand(  // Toggle drive mode
             () -> {
               if (drivetrain.getDefaultCommand() instanceof ArcadeDrive)
@@ -88,6 +103,9 @@ public class RobotContainer {
 
   // Returns the robot's main autonomous command
   public Command getAutonomousCommand() {
-    return null;
+    return new AutoRoutine6(drivetrain);
   }
+
+  public IndexerSubsystem getIndexerSubsystem() {return indexer;}
 }
+
