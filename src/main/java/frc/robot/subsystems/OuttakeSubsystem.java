@@ -19,7 +19,6 @@ import static frc.robot.Constants.MechanismConstants.*;
 public class OuttakeSubsystem extends SubsystemBase {
     // Setup motors, pid controller, and booleans
     private final TalonFX shooterMotorFront = new TalonFX(shooterMotorPortA);
-    private final TalonFX shooterMotorBack = new TalonFX(shooterMotorPortB);
     private final Servo leftHoodAngleServo = new Servo(2);
     private final Servo rightHoodAngleServo = new Servo(3);
     //ColorWheelUtils colorWheel = new ColorWheelUtils();
@@ -28,12 +27,13 @@ public class OuttakeSubsystem extends SubsystemBase {
     NetworkTableEntry shooterNTE;
 
     public boolean shooterRunning = false;
-    private double currentFrontShooterPower = 0.0;
     private double currentBackShooterPower = 0.0;
 
     public OuttakeSubsystem() {
         shooterMotorFront.setInverted(false);
+        TalonFX shooterMotorBack = new TalonFX(shooterMotorPortB);
         shooterMotorBack.setInverted(false);
+        shooterMotorBack.follow(shooterMotorFront);
 
         frontShooterPID = new PIDController(0, 0 ,0);
         backShooterPID = new PIDController(0, 0 ,0);
@@ -46,23 +46,15 @@ public class OuttakeSubsystem extends SubsystemBase {
                 .withProperties(Map.of("min", 0, "max", 100));
     }
 
-    public void setShooterPower(double power) { // Enables both wheels
-        setShooterFront(power);
-        setShooterBack(power);
+
+
+    public void setShooter(double power) {
+        if ( power > 1.0 || power < 0.0) return;
+        shooterMotorFront.set(ControlMode.PercentOutput, power);
         shooterRunning = true;
     }
 
-    public void setShooterFront(double power) {
-        if ( power > 1.0 || power < 0.0) return;
-        currentFrontShooterPower = power;
-        shooterMotorFront.set(ControlMode.PercentOutput, currentFrontShooterPower);
-    }
 
-    public void setShooterBack(double power) {
-        if (power>1.0 || power<0.0) return;
-        currentBackShooterPower = power;
-        shooterMotorBack.set(ControlMode.PercentOutput, currentBackShooterPower);
-    }
 
     public void setHoodAngle(double angle) {
         if (angle >= minimumHoodAngle && angle <= maximumHoodAngle) {
@@ -75,8 +67,7 @@ public class OuttakeSubsystem extends SubsystemBase {
         return ((maximumHoodAngle - minimumHoodAngle) * (leftHoodAngleServo.getPosition() + rightHoodAngleServo.getPosition()) / 360) + minimumHoodAngle; }
 
     public void stopShooter() { // Disables shooter
-        setShooterFront(0);
-        setShooterBack(0);
+        setShooter(0);
         shooterRunning = false;
     }
 
