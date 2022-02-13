@@ -15,7 +15,7 @@ public class EnableShooter extends CommandBase {
     }
 
     @Override
-    public void initialize() { outtakeSubsystem.setShooterPower(idleOuttakeSpeed); }
+    public void initialize() { outtakeSubsystem.setShooter(idleOuttakeSpeed); }
 
     @Override
     public boolean isFinished() { return true; }

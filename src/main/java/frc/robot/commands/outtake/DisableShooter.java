@@ -14,7 +14,7 @@ public class DisableShooter extends CommandBase {
 
     @Override
     public void initialize() {
-        outtakeSubsystem.setShooterPower(0.0);
+        outtakeSubsystem.setShooter(0.0);
     }
 
     @Override
