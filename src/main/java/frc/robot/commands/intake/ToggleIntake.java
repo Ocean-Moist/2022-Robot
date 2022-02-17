@@ -3,6 +3,7 @@ package frc.robot.commands.intake;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.IndexerSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
+import frc.robot.subsystems.LEDSubsystem;
 
 public class ToggleIntake extends CommandBase {
     // Define necessary subsystems
@@ -16,7 +17,10 @@ public class ToggleIntake extends CommandBase {
     }
 
     @Override
-    public void initialize() { intakeSubsystem.toggleIntake(); } // On initialize, toggle intake
+    public void initialize() {
+        intakeSubsystem.toggleIntake(); // On initialize, toggle intake
+        intakeSubsystem.togglePneumatic();
+    }
 
     @Override
     public void execute() {}
