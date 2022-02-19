@@ -2,6 +2,7 @@ package frc.robot.subsystems;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
+import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
@@ -13,7 +14,7 @@ import static frc.robot.Constants.MechanismConstants.indexerMotorPort;
 
 public class IndexerSubsystem extends SubsystemBase {
     // Configure motor and booleans
-    private final TalonFX indexerMotor = new TalonFX(indexerMotorPort);
+    private final WPI_TalonFX indexerMotor = new WPI_TalonFX(indexerMotorPort);
     private final ColorWheelUtils colorWheelUtils = new ColorWheelUtils();
 
     public WheelColors currentColor = WheelColors.GREEN;
@@ -70,6 +71,10 @@ public class IndexerSubsystem extends SubsystemBase {
 
         SmartDashboard.putBoolean("Indexer", indexerRunning);
         SmartDashboard.putNumber("Proximity", currentProximity);
+    }
+
+    public WPI_TalonFX getIndexerMotor() {
+        return indexerMotor;
     }
 }
 

@@ -90,4 +90,17 @@ public final class Constants {
         public static final int LEDPort = 0;
         public static final int LEDStripLength = 40;
     }
+
+    public static final class PDPConstants {
+        public static final int drivetrainMotor1 = 12;
+        public static final int drivetrainMotor2 = 13;
+        public static final int drivetrainMotor3 = 14;
+        public static final int drivetrainMotor4 = 15;
+        public static final int intakeMotor = 3;
+        public static final int indexerMotor = 1;
+        public static final int turretMotor = 0;
+        public static final int shooterMotorA = 4;
+        public static final int shooterMotorB = 5;
+        // public static final int climberMotor = 9;
+    }
 }

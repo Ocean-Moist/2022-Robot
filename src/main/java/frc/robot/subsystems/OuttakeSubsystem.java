@@ -2,6 +2,7 @@ package frc.robot.subsystems;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
+import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.wpilibj.Servo;
@@ -16,8 +17,8 @@ import static frc.robot.Constants.MechanismConstants.*;
 
 public class OuttakeSubsystem extends SubsystemBase {
     // Setup motors, pid controller, and booleans
-    private final TalonFX shooterMotorFront = new TalonFX(shooterMotorPortA);
-    private final TalonFX shooterMotorBack = new TalonFX(shooterMotorPortB);
+    private final WPI_TalonFX shooterMotorFront = new WPI_TalonFX(shooterMotorPortA);
+    private final WPI_TalonFX shooterMotorBack = new WPI_TalonFX(shooterMotorPortB);
     //private final TalonFX turretMotor = new TalonFX(turretMotorPort);
 
     private final Servo leftHoodAngleServo = new Servo(2);
@@ -110,6 +111,18 @@ public class OuttakeSubsystem extends SubsystemBase {
 
     public void setTurretActive(boolean active) {
         turretActive = active;
+    }
+
+    public WPI_TalonFX getShooterMotorA() {
+        return shooterMotorFront;
+    }
+
+    public WPI_TalonFX getShooterMotorB() {
+        return shooterMotorBack;
+    }
+
+    public WPI_TalonFX getTurretMotor() {
+        return
     }
 
     @Override

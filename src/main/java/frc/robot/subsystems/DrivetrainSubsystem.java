@@ -39,6 +39,7 @@ public class DrivetrainSubsystem extends SubsystemBase {
     private final MotorControllerGroup leftMotors;
     private final MotorControllerGroup rightMotors;
     private final DifferentialDrive drive;
+    WPI_TalonFX[] driveMotors;
 
     public DrivetrainSubsystem() {
         // Initialize motors
@@ -47,7 +48,8 @@ public class DrivetrainSubsystem extends SubsystemBase {
                 new WPI_TalonFX(Constants.DriveConstants.rightFrontDrivePort),
                 new WPI_TalonFX(Constants.DriveConstants.leftRearDrivePort),
                 new WPI_TalonFX(Constants.DriveConstants.leftFrontDrivePort)
-        }; configureDriveMotors(driveMotors); // Configure motors
+        };
+        configureDriveMotors(driveMotors); // Configure motors
 
         leftMotors = new MotorControllerGroup(driveMotors[0], driveMotors[1]);
         rightMotors = new MotorControllerGroup(driveMotors[2], driveMotors[3]);
@@ -90,6 +92,9 @@ public class DrivetrainSubsystem extends SubsystemBase {
         drive.tankDrive(leftVelocity, rightVelocity);
     }
 
+    public WPI_TalonFX[] getDriveMotors() {
+        return driveMotors;
+    }
     /**
      * Tank drive without deadband, giving full control of velocities to PID controller
      * @param leftVelocity Velocity of the left wheels
@@ -220,5 +225,6 @@ public class DrivetrainSubsystem extends SubsystemBase {
 
         //odometry.update(Rotation2d.fromDegrees(gyro.getAngle()), leftEncoder.getDistance(), rightEncoder.getDistance());
     }
+
 }
 
