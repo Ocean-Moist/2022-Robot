@@ -5,35 +5,35 @@ import com.ctre.phoenix.motorcontrol.can.TalonFX;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
-import frc.robot.commands.indexer.EnsureResidualBeltCountdownIsNotRunning;
 import frc.robot.lib.colorwheel.ColorWheelUtils;
 import frc.robot.lib.colorwheel.WheelColors;
 
-import java.util.function.BooleanSupplier;
-
-import static frc.robot.Constants.MechanismConstants.indexerBeltMotorPort;
-import static frc.robot.Constants.MechanismConstants.indexerMecanumMotorPort;
+import static frc.robot.Constants.MechanismConstants.indexerMotorPort;
 
 
 public class IndexerSubsystem extends SubsystemBase {
-    // Configure motors and booleans
-    private final TalonFX indexerMotor = new TalonFX(indexerMecanumMotorPort);
-    private final TalonFX beltMotor = new TalonFX(indexerBeltMotorPort);
+    // Configure motor and booleans
+    private final TalonFX indexerMotor = new TalonFX(indexerMotorPort);
     private final ColorWheelUtils colorWheelUtils = new ColorWheelUtils();
 
     public WheelColors currentColor = WheelColors.GREEN;
-    public double currentProximity = 2000;
+    public double currentProximity = 0;
 
     public boolean indexerRunning = false;
-    public boolean beltRunning = false;
-    public boolean residualBeltFlag = false;
 
     public IndexerSubsystem() {
-        beltMotor.setInverted(true);
+        indexerMotor.setInverted(true);
     }
 
-    public void startIndexer() { // Enables indexer
+    public void startIndexer() {
+        System.out.println("forward");// Enables indexer
         indexerMotor.set(ControlMode.PercentOutput, Constants.MechanismConstants.indexerSpeed);
+        indexerRunning = true;
+    }
+
+    public void reverseIndexer() {
+        System.out.println("revers");
+        indexerMotor.set(ControlMode.PercentOutput, -Constants.MechanismConstants.indexerSpeed);
         indexerRunning = true;
     }
 
@@ -42,29 +42,25 @@ public class IndexerSubsystem extends SubsystemBase {
         indexerRunning = false;
     }
 
-    public void toggleIndexer() { if (indexerRunning) stopIndexer(); else startIndexer(); } // Toggles indexer
-
-    public void startBelt() { // Enables belt
-        beltMotor.set(ControlMode.PercentOutput, Constants.MechanismConstants.beltSpeed);
-        beltRunning = true; new EnsureResidualBeltCountdownIsNotRunning(this).schedule();
+    public void setIndexer(int power) {
+        indexerMotor.set(ControlMode.PercentOutput, power);
     }
 
-    public void stopBelt() { // Disables belt
-        beltMotor.set(ControlMode.PercentOutput, 0);
-        beltRunning = false;
+    public void toggleIndexer() {
+        if (indexerRunning) stopIndexer();
+        else startIndexer();
+    } // Toggles indexer
+
+    public boolean ballPrimed() {
+        return currentProximity > 10;
     }
 
-    public void toggleBelt() { if (beltRunning) stopBelt(); else startBelt(); } // Toggles belt
-
-    public boolean ballPrimed() { return currentProximity > 1800; }
-
-    public WheelColors primedBallColor() { return currentColor; }
-
-    public BooleanSupplier getResidualBeltFlag() {return () -> residualBeltFlag;}
+    public WheelColors primedBallColor() {
+        return currentColor;
+    }
 
     public void disable() { // Disables indexer and belt
         stopIndexer();
-        stopBelt();
     }
 
     @Override
@@ -73,6 +69,7 @@ public class IndexerSubsystem extends SubsystemBase {
         currentProximity = colorWheelUtils.currentProximity();
 
         SmartDashboard.putBoolean("Indexer", indexerRunning);
+        SmartDashboard.putNumber("Proximity", currentProximity);
     }
 }
 
