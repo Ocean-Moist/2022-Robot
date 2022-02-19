@@ -53,14 +53,15 @@ public class DrivetrainSubsystem extends SubsystemBase {
 
         leftMotors = new MotorControllerGroup(driveMotors[0], driveMotors[1]);
         rightMotors = new MotorControllerGroup(driveMotors[2], driveMotors[3]);
-        leftMotors.setInverted(false);
+        rightMotors.setInverted(true);
+
         drive = new DifferentialDrive(leftMotors, rightMotors); // Initialize Differential Drive
 
         // Configure encoders
         rightEncoder = new Encoder(rightEncoderChannelA, rightEncoderchannelB, true, Encoder.EncodingType.k2X);
         leftEncoder = new Encoder(leftEncoderChannelA, leftEncoderChannelB, false, Encoder.EncodingType.k2X);
-        leftEncoder.setDistancePerPulse((6.0 * 0.0254 * Math.PI) / 2048); // 6 inch wheel, to meters, 2048 ticks //0.0254
-        rightEncoder.setDistancePerPulse((6.0 * 0.0254 * Math.PI) / 2048);// 6 inch wheel, to meters, 2048 ticks
+        leftEncoder.setDistancePerPulse(wheelDiameter * 0.0254 * Math.PI * driveGearRatio / 2048); // 6-inch wheel, to meters, PI for circumference, gear conversion, 2048 ticks per rotation
+        rightEncoder.setDistancePerPulse(wheelDiameter * 0.0254 * Math.PI * driveGearRatio / 2048); // 6-inch wheel, to meters, PI for circumference, gear conversion, 2048 ticks per rotation
 
         //Configure solenoids
         driveShifterRight.set(DoubleSolenoid.Value.kReverse);
@@ -105,7 +106,7 @@ public class DrivetrainSubsystem extends SubsystemBase {
     }
 
     public void tankDriveVolts(double leftVolts, double rightVolts) {
-        leftMotors.setVoltage(leftVolts);
+        leftMotors.setVoltage(-leftVolts);
         rightMotors.setVoltage(rightVolts);
         drive.feed();
     }
@@ -127,9 +128,9 @@ public class DrivetrainSubsystem extends SubsystemBase {
     public void configureDriveMotors(TalonFX[] driveMotors) {
         for (TalonFX motor: driveMotors) {
             motor.configFactoryDefault(); // Initialize motor set up
-            motor.configOpenloopRamp(0.3); // Ramp up (Trapezoid)
-            motor.configClosedloopRamp(0.3); // Ramp down (Trapezoid)
-            motor.setNeutralMode(NeutralMode.Brake); // Default robot mode should be Coasting
+            motor.configOpenloopRamp(0.7); // Ramp up (Trapezoid)
+            motor.configClosedloopRamp(0.7); // Ramp down (Trapezoid)
+            motor.setNeutralMode(NeutralMode.Coast); // Default robot mode should be Coasting (So it doesn't wobble cuz top heavy yaknow)
             motor.configForwardSoftLimitEnable(false);
             motor.configReverseSoftLimitEnable(false);
         }
@@ -149,12 +150,6 @@ public class DrivetrainSubsystem extends SubsystemBase {
     public int getLeftEncoderCount() { return this.leftEncoder.get(); } // Returns left encoder raw count
 
     public int getRightEncoderCount() { return this.rightEncoder.get(); } // Returns right encoder raw count
-
-    public void resetEncoderCounts() { // Resets the encoders
-        this.leftEncoder.reset();
-        this.rightEncoder.reset();
-    }
-
 
     public double getRightDistanceDriven() { return rightEncoder.getDistance(); } // Returns the distance the right side has driven
 
