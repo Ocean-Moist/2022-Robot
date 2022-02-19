@@ -53,19 +53,19 @@ public class DrivetrainSubsystem extends SubsystemBase {
 
         leftMotors = new MotorControllerGroup(driveMotors[0], driveMotors[1]);
         rightMotors = new MotorControllerGroup(driveMotors[2], driveMotors[3]);
-        rightMotors.setInverted(true);
-
+        leftMotors.setInverted(false);
         drive = new DifferentialDrive(leftMotors, rightMotors); // Initialize Differential Drive
 
         // Configure encoders
         rightEncoder = new Encoder(rightEncoderChannelA, rightEncoderchannelB, true, Encoder.EncodingType.k2X);
         leftEncoder = new Encoder(leftEncoderChannelA, leftEncoderChannelB, false, Encoder.EncodingType.k2X);
-        leftEncoder.setDistancePerPulse(wheelDiameter * 0.0254 * Math.PI * driveGearRatio / 2048); // 6-inch wheel, to meters, PI for circumference, gear conversion, 2048 ticks per rotation
-        rightEncoder.setDistancePerPulse(wheelDiameter * 0.0254 * Math.PI * driveGearRatio / 2048); // 6-inch wheel, to meters, PI for circumference, gear conversion, 2048 ticks per rotation
+        leftEncoder.setDistancePerPulse((6.0 * 0.0254 * Math.PI) / 2048); // 6 inch wheel, to meters, 2048 ticks //0.0254
+        rightEncoder.setDistancePerPulse((6.0 * 0.0254 * Math.PI) / 2048);// 6 inch wheel, to meters, 2048 ticks
 
         //Configure solenoids
         driveShifterRight.set(DoubleSolenoid.Value.kReverse);
         driveShifterLeft.set(DoubleSolenoid.Value.kReverse);
+        odometry = new DifferentialDriveOdometry(gyro.getRotation2d());
     }
 
     /**
@@ -74,7 +74,7 @@ public class DrivetrainSubsystem extends SubsystemBase {
      * @param rot Velocity of rotation
      */
     public void arcadeDrive(double throttle, double rot) {
-        drive.arcadeDrive(throttle * maxDriveSpeed, maxDriveSpeed < 0 ? -rot * maxDriveSpeed : rot * maxDriveSpeed);
+        drive.arcadeDrive(throttle * maxDriveSpeed, rot * maxDriveSpeed);
     }
 
     /**
@@ -89,7 +89,7 @@ public class DrivetrainSubsystem extends SubsystemBase {
         double leftPower = ((maxDriveSpeed - minDriveSpeed) * Math.abs(leftVelocity) + minDriveSpeed) * leftSign;
         double rightPower = ((maxDriveSpeed - minDriveSpeed) * Math.abs(rightVelocity) + minDriveSpeed) * rightSign;
 
-        drive.tankDrive(leftVelocity, rightVelocity);
+        drive.tankDrive(leftVelocity, -rightVelocity);
     }
 
     public WPI_TalonFX[] getDriveMotors() {
@@ -106,7 +106,7 @@ public class DrivetrainSubsystem extends SubsystemBase {
 
     public void tankDriveVolts(double leftVolts, double rightVolts) {
         leftMotors.setVoltage(leftVolts);
-        leftMotors.setVoltage(rightVolts);
+        rightMotors.setVoltage(rightVolts);
         drive.feed();
     }
 
@@ -116,10 +116,6 @@ public class DrivetrainSubsystem extends SubsystemBase {
      * @param rightOutput Right front wheel output percentage
      */
     public void setMotorPercentOutput(double leftOutput, double rightOutput) {
-//        driveMotors[0].set(ControlMode.PercentOutput, leftOutput);
-//        driveMotors[1].set(ControlMode.PercentOutput, leftOutput);
-//        driveMotors[2].set(ControlMode.PercentOutput, rightOutput);
-//        driveMotors[3].set(ControlMode.PercentOutput, rightOutput);
         leftMotors.set(leftOutput);
         rightMotors.set(rightOutput);
     }
@@ -153,6 +149,12 @@ public class DrivetrainSubsystem extends SubsystemBase {
     public int getLeftEncoderCount() { return this.leftEncoder.get(); } // Returns left encoder raw count
 
     public int getRightEncoderCount() { return this.rightEncoder.get(); } // Returns right encoder raw count
+
+    public void resetEncoderCounts() { // Resets the encoders
+        this.leftEncoder.reset();
+        this.rightEncoder.reset();
+    }
+
 
     public double getRightDistanceDriven() { return rightEncoder.getDistance(); } // Returns the distance the right side has driven
 

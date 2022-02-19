@@ -17,10 +17,7 @@ import static frc.robot.Constants.MechanismConstants.*;
 
 public class OuttakeSubsystem extends SubsystemBase {
     // Setup motors, pid controller, and booleans
-    private final WPI_TalonFX shooterMotorFront = new WPI_TalonFX(shooterMotorPortA);
-    private final WPI_TalonFX shooterMotorBack = new WPI_TalonFX(shooterMotorPortB);
-    //private final TalonFX turretMotor = new TalonFX(turretMotorPort);
-
+    private final TalonFX shooterMotorFront = new TalonFX(shooterMotorPortA);
     private final Servo leftHoodAngleServo = new Servo(2);
     private final Servo rightHoodAngleServo = new Servo(3);
 
@@ -29,15 +26,12 @@ public class OuttakeSubsystem extends SubsystemBase {
     private final LimelightSubsystem limelight;
 
     public boolean shooterRunning = false;
-    public boolean turretActive = false;
-    private double shuffleboardShooterPower = 0;
-
-
-    public OuttakeSubsystem(LimelightSubsystem ll) {
-        limelight = ll;
+    private double currentBackShooterPower = 0.0;
 
         shooterMotorFront.setInverted(false);
+        TalonFX shooterMotorBack = new TalonFX(shooterMotorPortB);
         shooterMotorBack.setInverted(false);
+        shooterMotorBack.follow(shooterMotorFront);
 
         turretAnglePID = new PIDController(0, 0, 0);
         turretAnglePID.setSetpoint(0); //Always trying to minimize our offset
@@ -52,30 +46,15 @@ public class OuttakeSubsystem extends SubsystemBase {
                 .getEntry();
     }
 
-    public void setShooterPower(double power) { // Enables both wheels
-        setShooterFront(power);
-        setShooterBack(power);
+
+
+    public void setShooter(double power) {
+        if ( power > 1.0 || power < 0.0) return;
+        shooterMotorFront.set(ControlMode.PercentOutput, power);
         shooterRunning = true;
     }
 
-    public void setShooterFront(double power) {
-        if (power > 1.0 || power < 0.0) return;
-        shooterMotorFront.set(ControlMode.PercentOutput, power);
-    }
 
-    public void setShooterBack(double power) {
-        if (power > 1.0 || power < 0.0) return;
-        shooterMotorBack.set(ControlMode.PercentOutput, power);
-    }
-
-    public void manualAdjustHoodAngle(double theta) {
-        leftHoodAngleServo.setAngle(leftHoodAngleServo.getAngle() + theta);
-        rightHoodAngleServo.setAngle(rightHoodAngleServo.getAngle() + theta);
-    }
-
-    public void manualAdjustTurret(double power) {
-        //turretMotor.set(ControlMode.PercentOutput, power);}
-    }
 
     public void setHoodAngle(double angle) {
         if (angle >= minimumHoodAngle && angle <= maximumHoodAngle) {
@@ -89,8 +68,7 @@ public class OuttakeSubsystem extends SubsystemBase {
     }
 
     public void stopShooter() { // Disables shooter
-        setShooterFront(0);
-        setShooterBack(0);
+        setShooter(0);
         shooterRunning = false;
     }
 
