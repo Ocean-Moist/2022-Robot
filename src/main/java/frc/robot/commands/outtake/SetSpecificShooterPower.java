@@ -9,7 +9,8 @@ public class SetSpecificShooterPower extends CommandBase {
     private final double power;
 
     public SetSpecificShooterPower(OuttakeSubsystem outtakeSubsystem, double power) {
-        this.outtakeSubsystem = outtakeSubsystem; this.power = power;
+        this.outtakeSubsystem = outtakeSubsystem;
+        this.power = power;
         addRequirements(this.outtakeSubsystem);
     }
 

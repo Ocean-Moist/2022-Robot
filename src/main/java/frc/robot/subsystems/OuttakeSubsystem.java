@@ -1,9 +1,9 @@
 package frc.robot.subsystems;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
-import com.ctre.phoenix.motorcontrol.TalonFXControlMode;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.wpilibj.Servo;
@@ -21,9 +21,9 @@ import static frc.robot.Constants.MechanismConstants.*;
 
 public class OuttakeSubsystem extends SubsystemBase {
     // Setup motors, pid controller, and booleans
-    private final TalonFX shooterMotorFront = new TalonFX(shooterMotorPortA);
-    private final TalonFX shooterMotorBack = new TalonFX(shooterMotorPortB);
-    private final TalonFX turretMotor = new TalonFX(turretMotorPort);
+    private final WPI_TalonFX shooterMotorFront = new WPI_TalonFX(shooterMotorPortA);
+    private final WPI_TalonFX shooterMotorBack = new WPI_TalonFX(shooterMotorPortB);
+    private final WPI_TalonFX turretMotor = new WPI_TalonFX(turretMotorPort);
 
     private final Servo leftHoodAngleServo = new Servo(2);
     private final Servo rightHoodAngleServo = new Servo(3);
@@ -31,11 +31,10 @@ public class OuttakeSubsystem extends SubsystemBase {
     private final NetworkTableEntry shooterNTE;
     private final PIDController turretAnglePID;
     private final LimelightSubsystem limelight;
-
-    private ShooterDataTable table =  new ShooterDataTable();
     public boolean shooterRunning = false;
     public boolean turretActive = false;
     public double shuffleboardShooterPower = 0;
+    private ShooterDataTable table = new ShooterDataTable();
 
 
     public OuttakeSubsystem(LimelightSubsystem ll) {
@@ -64,15 +63,8 @@ public class OuttakeSubsystem extends SubsystemBase {
         shooterMotorBack.enableVoltageCompensation(true);
     }
 
-
-    public void setShooterFront(double power) {
-        if (power > 1.0 || power < 0.0) return;
-        shooterMotorFront.set(ControlMode.PercentOutput, power);
-    }
-
-    public void setShooterBack(double power) {
-        if (power > 1.0 || power < 0.0) return;
-        shooterMotorBack.set(ControlMode.PercentOutput, power);
+    public void setShooter(double power) {
+        shooterMotorBack.set(ControlMode.PercentOutput, MathUtil.clamp(power, -1, 1));
     }
 
     public void manualAdjustHoodAngle(double theta) {
@@ -84,15 +76,17 @@ public class OuttakeSubsystem extends SubsystemBase {
         turretMotor.set(ControlMode.PercentOutput, power);
     }
 
-    public void setHoodAngle(double angle) {
-        if (angle >= minimumHoodAngle && angle <= maximumHoodAngle) {
-            leftHoodAngleServo.setAngle(180 * (angle - minimumHoodAngle) / (maximumHoodAngle - minimumHoodAngle)); // 0 - 180 DEGREES
-            rightHoodAngleServo.setAngle(180 * (angle - minimumHoodAngle) / (maximumHoodAngle - minimumHoodAngle)); // 0 - 180 DEGREES
-        }
-    }
-
     public double getHoodAngle() { //Takes the average of the angles (0-1) and scales it into a degree measurement
         return ((maximumHoodAngle - minimumHoodAngle) * (leftHoodAngleServo.getAngle() + rightHoodAngleServo.getAngle()) / 361) + minimumHoodAngle;
+    }
+
+    public void setHoodAngle(double angle) {
+        if (angle >= minimumHoodAngle && angle <= maximumHoodAngle) {
+            leftHoodAngleServo.setAngle(180 * (angle - minimumHoodAngle) / (maximumHoodAngle - minimumHoodAngle)); //
+            // 0 - 180 DEGREES
+            rightHoodAngleServo.setAngle(180 * (angle - minimumHoodAngle) / (maximumHoodAngle - minimumHoodAngle));
+            // 0 - 180 DEGREES
+        }
     }
 
     public void stopShooter() { // Disables shooter
@@ -106,7 +100,7 @@ public class OuttakeSubsystem extends SubsystemBase {
     }
 
     public void stopTurret() {
-        turretMotor.set(TalonFXControlMode.PercentOutput, 0);
+        turretMotor.stopMotor();
     }
 
     public void setTurretActive(boolean active) {
@@ -114,15 +108,21 @@ public class OuttakeSubsystem extends SubsystemBase {
     }
 
     public double getFrontShooterAcceleration() {
-        return shooterMotorFront.getErrorDerivative();}
+        return shooterMotorFront.getErrorDerivative();
+    }
 
     public double getBackShooterAcceleration() {
-        return shooterMotorBack.getErrorDerivative();}
+        return shooterMotorBack.getErrorDerivative();
+    }
 
     public void disable() {
         stopShooter();
         stopHood();
         stopTurret();
+    }
+
+    public WPI_TalonFX getShooterMotorA() {
+        return shooterMotorFront;
     }
 
     @Override
@@ -145,6 +145,10 @@ public class OuttakeSubsystem extends SubsystemBase {
                 manualAdjustTurret(0);
             }
         }
+    }
+
+    public WPI_TalonFX getShooterMotorB() {
+        return shooterMotorBack;
     }
 }
 

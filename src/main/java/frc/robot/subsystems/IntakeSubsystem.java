@@ -2,7 +2,7 @@ package frc.robot.subsystems;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
-import com.ctre.phoenix.motorcontrol.can.TalonFX;
+import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -13,9 +13,11 @@ import static frc.robot.Constants.PneumaticConstants.*;
 
 public class IntakeSubsystem extends SubsystemBase {
     // Configure intake motor, solenoid, and booleans
-    private final TalonFX intakeMotor = new TalonFX(Constants.MechanismConstants.intakeMotorPort);
-    private final DoubleSolenoid rightIntakePneumatic = new DoubleSolenoid(PneumaticsModuleType.CTREPCM, pneumaticPortRightA, pneumaticPortRightB);
-    private final DoubleSolenoid leftIntakePneumatic = new DoubleSolenoid(PneumaticsModuleType.CTREPCM, pneumaticPortLeftA, pneumaticPortLeftB);
+    private final WPI_TalonFX intakeMotor = new WPI_TalonFX(Constants.MechanismConstants.intakeMotorPort);
+    private final DoubleSolenoid rightIntakePneumatic = new DoubleSolenoid(PneumaticsModuleType.CTREPCM,
+            pneumaticPortRightA, pneumaticPortRightB);
+    private final DoubleSolenoid leftIntakePneumatic = new DoubleSolenoid(PneumaticsModuleType.CTREPCM,
+            pneumaticPortLeftA, pneumaticPortLeftB);
 
     public boolean isRunning = false;
     public boolean isExtended = false;
@@ -38,11 +40,14 @@ public class IntakeSubsystem extends SubsystemBase {
         isRunning = false;
     }
 
-    public void toggleIntake() { if (isRunning) stopIntake(); else startIntake(); } // Toggles intake
+    public void toggleIntake() {
+        if (isRunning) stopIntake();
+        else startIntake();
+    } // Toggles intake
 
     public void invertIntake() { // Inverts intake wheel direction
         isInverted = !this.isInverted;
-        int sign = isInverted ? 1: -1;
+        int sign = isInverted ? 1 : -1;
         if (isRunning) intakeMotor.set(ControlMode.PercentOutput, sign * Constants.MechanismConstants.intakeSpeed);
     }
 
@@ -73,5 +78,9 @@ public class IntakeSubsystem extends SubsystemBase {
 
     @Override
     public void periodic() {SmartDashboard.putBoolean("Intake", isRunning);}
+
+    public WPI_TalonFX getIntakeMotor() {
+        return intakeMotor;
+    }
 }
 

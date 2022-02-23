@@ -8,12 +8,13 @@ import edu.wpi.first.math.kinematics.DifferentialDriveKinematics;
 import edu.wpi.first.math.util.Units;
 
 public final class Constants {
-    
+
     public static final class AutoConstants {
         public static double ksVolts = 0.2455; //0.49117
         public static double kvVoltSecondsPerMeter = 1.3023; //3.4251
         public static double kaVoltSecondsSquaredPerMeter = 0.091565; //0.0915650
-        public static DifferentialDriveKinematics kDriveKinematics = new DifferentialDriveKinematics(DriveConstants.trackWidth);
+        public static DifferentialDriveKinematics kDriveKinematics =
+                new DifferentialDriveKinematics(DriveConstants.trackWidth);
         public static double maxAutoSpeed = 3.0; // meters per second
         public static double maxAutoAcceleration = 3.0; // meters per second per second
         public static double kRamseteB = 2.0;
@@ -23,7 +24,9 @@ public final class Constants {
     }
 
     public static final class DriveConstants {
-        /** DRIVE MOTOR PORTS **/
+        /**
+         * DRIVE MOTOR PORTS
+         **/
         public static final int leftFrontDrivePort = 2;
         public static final int leftRearDrivePort = 1;
         public static final int rightFrontDrivePort = 3;
@@ -38,7 +41,7 @@ public final class Constants {
          * MISC CONSTANTS
          **/
         public static final double trackWidth = Units.inchesToMeters(28);
-        public static final double driveGearRatio = 4/3.0;
+        public static final double driveGearRatio = 4 / 3.0;
         public static final double wheelDiameter = 6.0; // 6 in.
 
         public static final double minDriveSpeed = 0.1;
@@ -47,7 +50,9 @@ public final class Constants {
     }
 
     public static final class OIConstants {
-        /** XBOX CONTROLLER PORTS **/
+        /**
+         * XBOX CONTROLLER PORTS
+         **/
         public static final int xboxControllerPort = 1;
         public static final int fightStickPort = 0;
     }

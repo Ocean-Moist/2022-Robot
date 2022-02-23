@@ -10,6 +10,7 @@ import frc.robot.subsystems.LimelightSubsystem;
 public class TurnToGoal extends CommandBase {
     DrivetrainSubsystem drivetrainSubsystem;
     LimelightSubsystem limelightSubsystem;
+    PIDController turnToGoalPID;
     private double distance;
     private double angleToGoal;
     private double goalMissingStartTime = 0;
@@ -18,8 +19,6 @@ public class TurnToGoal extends CommandBase {
     private double Kd = 0.0001;
     private double power = 0.0;
     private boolean goalFound = true;
-
-    PIDController turnToGoalPID;
 
     public TurnToGoal(DrivetrainSubsystem drivetrainSubsystem, LimelightSubsystem limelightSubsystem) {
         this.drivetrainSubsystem = drivetrainSubsystem;

@@ -12,12 +12,19 @@ public class GuaranteeLimelightDataEquals extends CommandBase {
     private final int index;
 
     public GuaranteeLimelightDataEquals(LimelightSubsystem limelightSubsystem, int index, double valueToGuarantee) {
-        this.limelightSubsystem = limelightSubsystem; this.index = index; this.valueToGuarantee = valueToGuarantee; this.tolerance = 1;
+        this.limelightSubsystem = limelightSubsystem;
+        this.index = index;
+        this.valueToGuarantee = valueToGuarantee;
+        this.tolerance = 1;
         addRequirements(this.limelightSubsystem);
     }
 
-    public GuaranteeLimelightDataEquals(LimelightSubsystem limelightSubsystem, int index, double valueToGuarantee, double tolerance) {
-        this.limelightSubsystem = limelightSubsystem; this.index = index; this.valueToGuarantee = valueToGuarantee; this.tolerance = tolerance;
+    public GuaranteeLimelightDataEquals(LimelightSubsystem limelightSubsystem, int index, double valueToGuarantee,
+                                        double tolerance) {
+        this.limelightSubsystem = limelightSubsystem;
+        this.index = index;
+        this.valueToGuarantee = valueToGuarantee;
+        this.tolerance = tolerance;
         addRequirements(this.limelightSubsystem);
     }
 

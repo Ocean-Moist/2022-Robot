@@ -1,8 +1,9 @@
 package frc.robot.lib.shooterData;
+
 import java.io.Serializable;
 
 //Stores launch speed, hood angle, and power as doubles
-public class ShooterSpec implements Serializable{
+public class ShooterSpec implements Serializable {
     private double speed;
     private double hoodAngle;
     private double power;
@@ -39,6 +40,7 @@ public class ShooterSpec implements Serializable{
     }
 
     public String toString() {
-        return ("speed = " + speed + " m/s \n" + "hoodAngle = " + hoodAngle + " degrees \n" + " power = " + power + "\n");
+        return ("speed = " + speed + " m/s \n" + "hoodAngle = " + hoodAngle + " degrees \n" + " power = " + power +
+                "\n");
     }
 }

@@ -30,7 +30,8 @@ public class LimelightSubsystem extends SubsystemBase {
 
     public void periodic() {
         try {
-            Number[] temp = limelight.getEntry("llpython").getNumberArray(new Number[]{-1, -1, -1, -1, -1, -1, -1, -1});
+            Number[] temp = limelight.getEntry("llpython").getNumberArray(new Number[] {-1, -1, -1, -1, -1, -1, -1,
+                    -1});
             if (Objects.equals(temp[7], 1) || Objects.equals(temp[7], 0)) limelightOutputArray = temp;
         } catch (ArrayIndexOutOfBoundsException ignored) {}
         try {
