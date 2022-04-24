@@ -163,10 +163,10 @@ public class RobotContainer {
   }
 
   private void configureAutoChooser() {
-    chooser.setDefaultOption("0: 2.5 Meters Forward", new Forward2AndHalfMeters(drivetrain));
+    chooser.setDefaultOption("0: 2.5 Meters Forward", new AutoRoutine0(drivetrain));
     chooser.addOption(
         "1: 5 Ball Auto - Bottom Left Start",
-        new FiveBallBottomLeft(
+        new AutoRoutine1(
             drivetrain,
             indexer,
             intake,
@@ -178,7 +178,7 @@ public class RobotContainer {
             shooterDataTable));
     chooser.addOption(
         "2: 2 Ball Auto - Top Left Start",
-        new TwoBallTopLeft(
+        new AutoRoutine2(
             drivetrain,
             indexer,
             intake,
@@ -190,7 +190,7 @@ public class RobotContainer {
             shooterDataTable));
     chooser.addOption(
         "3: 2 Ball Auto - Bottom Left Start",
-        new TwoBallBottomLeft(
+        new AutoRoutine3(
             drivetrain,
             indexer,
             intake,
@@ -202,7 +202,7 @@ public class RobotContainer {
             shooterDataTable));
     chooser.addOption(
         "4: 4 Ball Auto - Bottom Left Start",
-        new FourBallBottomLeft(
+        new AutoRoutine4(
             drivetrain,
             indexer,
             intake,
@@ -213,8 +213,8 @@ public class RobotContainer {
             limelight,
             shooterDataTable));
     chooser.addOption(
-        "5: 2 ball Auto Mid Bottom",
-        new TwoBallMidBottom(
+        "5: 2 ball Auto",
+        new AutoRoutine5(
             drivetrain,
             indexer,
             intake,
@@ -225,8 +225,8 @@ public class RobotContainer {
             limelight,
             shooterDataTable));
     chooser.addOption(
-        "7: 2 Ball Auto - Top Left Start And Defense",
-        new TwoBallTopLeftDefense(
+        "7: fucky wucky",
+        new AutoRoutine7(
             drivetrain,
             indexer,
             intake,

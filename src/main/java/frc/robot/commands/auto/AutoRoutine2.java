@@ -1,15 +1,14 @@
 package frc.robot.commands.auto;
 
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
-import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.commands.intake.ToggleIntake;
 import frc.robot.commands.scoring.ShootTwo;
 import frc.robot.commands.turret.TurretSetSetpointRadians;
 import frc.robot.lib.shooterData.ShooterDataTable;
 import frc.robot.subsystems.*;
 
-public class TwoBallBottomLeft extends SequentialCommandGroup {
-  public TwoBallBottomLeft(
+public class AutoRoutine2 extends SequentialCommandGroup {
+  public AutoRoutine2(
       DrivetrainSubsystem drivetrain,
       IndexerSubsystem indexer,
       IntakeSubsystem intake,
@@ -21,9 +20,15 @@ public class TwoBallBottomLeft extends SequentialCommandGroup {
       ShooterDataTable shooterDataTable) {
     addCommands(
         new ToggleIntake(intake, portal),
-        new PPRamsete(drivetrain, "Auto Routine 1 Part 1", 1.5, 0.7, true),
+        new AutoRoutine6(drivetrain, "Auto Routine 2 Part 3", 4, 1.5, true), // drives up to ball
         new TurretSetSetpointRadians(turret, -Math.PI),
-        new WaitCommand(0.25),
-        new ShootTwo(indexer, intake, shooter, portal, hood, turret, limelight, shooterDataTable));
+        new ShootTwo(indexer, intake, shooter, portal, hood, turret, limelight, shooterDataTable),
+        new AutoRoutine6(
+            drivetrain,
+            "Auto Routine 2 Part 2",
+            4,
+            1.5,
+            false) // drives to the right to get another ball
+        );
   }
 }
